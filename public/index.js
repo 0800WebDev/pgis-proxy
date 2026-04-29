@@ -1,5 +1,5 @@
 let currentUrl = "";
-window.currentFrame = frame;
+let globalConnection; 
 
 "use strict"; /** * @type {HTMLFormElement} */
 const form = document.getElementById("sj-form"); /** * @type {HTMLInputElement} */
@@ -18,7 +18,7 @@ const scramjet = new ScramjetController({
     },
 });
 scramjet.init();
-const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
+connection = new BareMux.BareMuxConnection("/baremux/worker.js");
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
     try {
@@ -69,6 +69,9 @@ reloadBtn.addEventListener("click", () => {
 
 
 
+
+
+
 async function loadShortcut(targetUrl) {
     const searchEngine = document.getElementById("sj-search-engine");
     
@@ -81,7 +84,7 @@ async function loadShortcut(targetUrl) {
         return;
     }
 
-    // 3. Hvis rammen IKKE finnes, må vi starte proxyen først (samme som i submit-eventet ditt):
+    // 3. Hvis rammen IKKE finnes, må vi starte proxyen først
     try {
         await registerSW();
     } catch (err) {
@@ -93,8 +96,10 @@ async function loadShortcut(targetUrl) {
     }
 
     let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
-    if ((await connection.getTransport()) !== "/libcurl/index.mjs") {
-        await connection.setTransport("/libcurl/index.mjs", [{
+    
+    // Her bruker vi den fiksede globale variabelen!
+    if ((await globalConnection.getTransport()) !== "/libcurl/index.mjs") {
+        await globalConnection.setTransport("/libcurl/index.mjs", [{
             websocket: wispUrl
         }]);
     }
@@ -109,5 +114,6 @@ async function loadShortcut(targetUrl) {
     
     frame.go(url);
 }
+
 
 
