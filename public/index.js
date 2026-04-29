@@ -77,7 +77,7 @@ function loadGoogle() {
         const url = search(specificUrl, searchEngine.value);
         window.currentFrame.go(url);
     } else {
-        console.error("Rammen er ikke opprettet ennå. Send inn skjemaet først.");
+        alert("Rammen er ikke opprettet ennå. Send inn skjemaet først.");
     }
 }
 
@@ -91,7 +91,7 @@ function loadYoutube() {
         const url = search(specificUrl, searchEngine.value);
         window.currentFrame.go(url);
     } else {
-        console.error("Rammen er ikke opprettet ennå. Send inn skjemaet først.");
+        alert("Rammen er ikke opprettet ennå. Send inn skjemaet først.");
     }
 }
 
