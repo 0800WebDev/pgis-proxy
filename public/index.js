@@ -72,48 +72,53 @@ reloadBtn.addEventListener("click", () => {
 
 
 
-async function loadShortcut(targetUrl) {
+
+
+   async function loadShortcut(targetUrl) {
     const searchEngine = document.getElementById("sj-search-engine");
     
     // 1. Krypter/behandle nettadressen først
     const url = search(targetUrl, searchEngine.value);
 
-    // 2. Sjekk om rammen allerede er laget
+    // 2. Sjekk om rammen allerede er laget (hvis ja, bare gå til siden)
     if (window.currentFrame) {
         window.currentFrame.go(url);
         return;
     }
 
-    // 3. Hvis rammen IKKE finnes, må vi starte proxyen først
+    // 3. Hvis rammen IKKE finnes, må vi starte proxyen
     try {
         await registerSW();
     } catch (err) {
         const error = document.getElementById("sj-error");
         const errorCode = document.getElementById("sj-error-code");
-        error.textContent = "Failed to register service worker.";
-        errorCode.textContent = err.toString();
+        if (error) error.textContent = "Failed to register service worker.";
+        if (errorCode) errorCode.textContent = err.toString();
         throw err;
     }
 
+    // 4. Hent BareMux-tilkoblingen direkte her slik at vi unngår "not defined"-feil
+    const shortConnection = new BareMux.BareMuxConnection("/baremux/worker.js");
+
     let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
     
-    // Her bruker vi den fiksede globale variabelen!
-    if ((await globalConnection.getTransport()) !== "/libcurl/index.mjs") {
-        await globalConnection.setTransport("/libcurl/index.mjs", [{
+    if ((await shortConnection.getTransport()) !== "/libcurl/index.mjs") {
+        await shortConnection.setTransport("/libcurl/index.mjs", [{
             websocket: wispUrl
         }]);
     }
 
-    // 4. Lag rammen og send brukeren til snarveien
+    // 5. Lag rammen og send brukeren til snarveien
     const frame = scramjet.createFrame();
     frame.frame.id = "sj-frame";
     document.body.appendChild(frame.frame);
     
-    // Lagre rammen globalt så knappen husker den til neste gang
+    // Lagre rammen globalt så knappen husker den til neste klikk
     window.currentFrame = frame; 
     
     frame.go(url);
 }
+
 
 
 
