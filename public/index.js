@@ -135,6 +135,22 @@ async function loadShortcut(targetUrl) {
 	    }
     });
 
+
+
+
+    function isProbablyMobile() {
+          const hasTouch = navigator.maxTouchPoints > 0 || "ontouchstart" in window;
+            const smallScreen = window.matchMedia("(max-width: 768px)").matches;
+              const mobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+                return (hasTouch && smallScreen) || mobileUA;
+                }
+
+                if (isProbablyMobile()) {
+                  alert("PGIS proxy may not work properly on mobile devices.");
+                  }
+    }
+
     const reloadBtn = document.getElementById("reloadBtn");
     reloadBtn.addEventListener("click", () => {
 	    frame.go(frame.url.href);
