@@ -43,9 +43,9 @@ form.addEventListener("submit", async (event) => {
 
 
 	document.body.insertAdjacentHTML("beforeend", `
-		<div style="display: flex; gap: 10px; background:rgba(255, 255, 255, 0.43); height: 10px;">
+		<div style="display: flex; gap: 10px; background:rgba(255, 255, 255, 0.43); height: 20px;">
   <input id="sj-new-address" style="z-index:999999; background:rgba(0, 0, 0, 0.73); height: 10px; width: 155px;" placeholder="Search or enter a url." />
-  <button style="z-index: 9999; width: 35px; border-radius: 8px; background:rgba(0, 0, 0, 0.73); color: rgba(209, 209, 209, 0.81); " id="reloadBtn">⟳</button>
+  <button style="z-index: 9999; width: 35px; border-radius: 8px; background:rgba(0, 0, 0, 0.73); color: rgba(209, 209, 209, 0.81); height: 10px;" id="reloadBtn">⟳</button>
   </div>
 `);
 
@@ -74,7 +74,7 @@ reloadBtn.addEventListener("click", () => {
 
 
 
-   async function loadShortcut(targetUrl) {
+async function loadShortcut(targetUrl) {
     const searchEngine = document.getElementById("sj-search-engine");
     
     // 1. Krypter/behandle nettadressen først
@@ -97,7 +97,7 @@ reloadBtn.addEventListener("click", () => {
         throw err;
     }
 
-    // 4. Hent BareMux-tilkoblingen direkte her slik at vi unngår "not defined"-feil
+    // 4. Hent BareMux-tilkoblingen
     const shortConnection = new BareMux.BareMuxConnection("/baremux/worker.js");
 
     let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
@@ -113,11 +113,34 @@ reloadBtn.addEventListener("click", () => {
     frame.frame.id = "sj-frame";
     document.body.appendChild(frame.frame);
     
-    // Lagre rammen globalt så knappen husker den til neste klikk
+    // Lagre rammen globalt så den husker den til neste klikk
     window.currentFrame = frame; 
     
     frame.go(url);
+
+    // 6. HER LEGGER VI TIL DE MANGLENDE ELEMENTENE (Samme som i submit-eventet ditt)
+	document.body.insertAdjacentHTML("beforeend", `
+		<div style="display: flex; gap: 10px; background:rgba(255, 255, 255, 0.43); height: 20px;">
+  <input id="sj-new-address" style="z-index:999999; background:rgba(0, 0, 0, 0.73); height: 10px; width: 155px;" placeholder="Search or enter a url." />
+  <button style="z-index: 9999; width: 35px; border-radius: 8px; background:rgba(0, 0, 0, 0.73); color: rgba(209, 209, 209, 0.81); height: 10px;" id="reloadBtn">⟳</button>
+  </div>
+    `);
+
+    const newAddress = document.getElementById("sj-new-address");
+
+    newAddress.addEventListener("keydown", (e) => {
+	    if (e.key === "Enter") {
+		    const url = search(newAddress.value, searchEngine.value);
+		    frame.go(url);
+	    }
+    });
+
+    const reloadBtn = document.getElementById("reloadBtn");
+    reloadBtn.addEventListener("click", () => {
+	    frame.go(frame.url.href);
+    });
 }
+
 
 
 
