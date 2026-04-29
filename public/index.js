@@ -65,3 +65,56 @@ reloadBtn.addEventListener("click", () => {
 
 
 });
+
+
+
+// Henter knappen fra HTML
+const specificBtn = document.getElementById("google");
+
+// Definerer handlingen når knappen klikkes
+specificBtn.addEventListener("click", () => {
+    const specificUrl = "https://google.com"; // Bytt ut med nettsiden du ønsker
+    const url = search(specificUrl, searchEngine.value);
+    frame.go(url);
+});
+
+
+// Henter knappen fra HTML
+const specificBtn = document.getElementById("youtube");
+
+// Definerer handlingen når knappen klikkes
+specificBtn.addEventListener("click", () => {
+    const specificUrl = "https://youtube.com"; // Bytt ut med nettsiden du ønsker
+    const url = search(specificUrl, searchEngine.value);
+    frame.go(url);
+});
+
+// Henter knappen fra HTML
+const specificBtn = document.getElementById("tiktok");
+
+// Definerer handlingen når knappen klikkes
+specificBtn.addEventListener("click", () => {
+    const specificUrl = "https://tiktok.com"; // Bytt ut med nettsiden du ønsker
+    const url = search(specificUrl, searchEngine.value);
+    frame.go(url);
+});
+
+// Henter knappen fra HTML
+const specificBtn = document.getElementById("github");
+
+// Definerer handlingen når knappen klikkes
+specificBtn.addEventListener("click", () => {
+    const specificUrl = "https://github.com"; // Bytt ut med nettsiden du ønsker
+    const url = search(specificUrl, searchEngine.value);
+    frame.go(url);
+});
+
+// Henter knappen fra HTML
+const specificBtn = document.getElementById("nowgg");
+
+// Definerer handlingen når knappen klikkes
+specificBtn.addEventListener("click", () => {
+    const specificUrl = "https://now.gg"; // Bytt ut med nettsiden du ønsker
+    const url = search(specificUrl, searchEngine.value);
+    frame.go(url);
+});
