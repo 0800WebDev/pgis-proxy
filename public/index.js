@@ -45,7 +45,7 @@ form.addEventListener("submit", async (event) => {
 	document.body.insertAdjacentHTML("beforeend", `
 		<div style="display: flex; gap: 10px; background:rgba(255, 255, 255, 0.43); height: 4px;">
   <input id="sj-new-address" style="z-index:999999; background:rgba(0, 0, 0, 0.73); height: 10px; width: 155px;" placeholder="Search or enter a url." />
-  <button style="z-index: 9999; width: 35px; border-radius: 8px; background:rgba(0, 0, 0, 0.73); color: rgba(209, 209, 209, 0.81); height: 10px;" id="reloadBtn">⟳</button>
+  <button style="z-index: 9999; width: 35px; border-radius: 8px; background:rgba(0, 0, 0, 0.73); color: rgba(209, 209, 209, 0.81); height: 40px;" id="reloadBtn">⟳</button>
   </div>
 `);
 
@@ -122,7 +122,7 @@ async function loadShortcut(targetUrl) {
 	document.body.insertAdjacentHTML("beforeend", `
 		<div style="display: flex; gap: 10px; background:rgba(255, 255, 255, 0.43); height: 4px;">
   <input id="sj-new-address" style="z-index:999999; background:rgba(0, 0, 0, 0.73); height: 10px; width: 155px;" placeholder="Search or enter a url." />
-  <button style="z-index: 9999; width: 35px; border-radius: 8px; background:rgba(0, 0, 0, 0.73); color: rgba(209, 209, 209, 0.81); height: 1px;" id="reloadBtn">⟳</button>
+  <button style="z-index: 9999; width: 35px; border-radius: 8px; background:rgba(0, 0, 0, 0.73); color: rgba(209, 209, 209, 0.81); height: 40px;" id="reloadBtn">⟳</button>
   </div>
     `);
 
