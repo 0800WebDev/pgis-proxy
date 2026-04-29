@@ -1,4 +1,5 @@
 let currentUrl = "";
+window.currentFrame = frame;
 
 "use strict"; /** * @type {HTMLFormElement} */
 const form = document.getElementById("sj-form"); /** * @type {HTMLInputElement} */
@@ -68,53 +69,29 @@ reloadBtn.addEventListener("click", () => {
 
 
 
-// Henter knappen fra HTML
-const specificBtn = document.getElementById("google");
+function loadGoogle() {
+    if (window.currentFrame) {
+        const specificUrl = "https://google.com"; // Bytt ut med ønsket side
+        const searchEngine = document.getElementById("sj-search-engine");
+        
+        const url = search(specificUrl, searchEngine.value);
+        window.currentFrame.go(url);
+    } else {
+        console.error("Rammen er ikke opprettet ennå. Send inn skjemaet først.");
+    }
+}
 
-// Definerer handlingen når knappen klikkes
-specificBtn.addEventListener("click", () => {
-    const specificUrl = "https://google.com"; // Bytt ut med nettsiden du ønsker
-    const url = search(specificUrl, searchEngine.value);
-    frame.go(url);
-});
 
 
-// Henter knappen fra HTML
-const specificBtn = document.getElementById("youtube");
+function loadYoutube() {
+    if (window.currentFrame) {
+        const specificUrl = "https://google.com"; // Bytt ut med ønsket side
+        const searchEngine = document.getElementById("sj-search-engine");
+        
+        const url = search(specificUrl, searchEngine.value);
+        window.currentFrame.go(url);
+    } else {
+        console.error("Rammen er ikke opprettet ennå. Send inn skjemaet først.");
+    }
+}
 
-// Definerer handlingen når knappen klikkes
-specificBtn.addEventListener("click", () => {
-    const specificUrl = "https://youtube.com"; // Bytt ut med nettsiden du ønsker
-    const url = search(specificUrl, searchEngine.value);
-    frame.go(url);
-});
-
-// Henter knappen fra HTML
-const specificBtn = document.getElementById("tiktok");
-
-// Definerer handlingen når knappen klikkes
-specificBtn.addEventListener("click", () => {
-    const specificUrl = "https://tiktok.com"; // Bytt ut med nettsiden du ønsker
-    const url = search(specificUrl, searchEngine.value);
-    frame.go(url);
-});
-
-// Henter knappen fra HTML
-const specificBtn = document.getElementById("github");
-
-// Definerer handlingen når knappen klikkes
-specificBtn.addEventListener("click", () => {
-    const specificUrl = "https://github.com"; // Bytt ut med nettsiden du ønsker
-    const url = search(specificUrl, searchEngine.value);
-    frame.go(url);
-});
-
-// Henter knappen fra HTML
-const specificBtn = document.getElementById("nowgg");
-
-// Definerer handlingen når knappen klikkes
-specificBtn.addEventListener("click", () => {
-    const specificUrl = "https://now.gg"; // Bytt ut med nettsiden du ønsker
-    const url = search(specificUrl, searchEngine.value);
-    frame.go(url);
-});
