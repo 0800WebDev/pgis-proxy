@@ -69,29 +69,45 @@ reloadBtn.addEventListener("click", () => {
 
 
 
-function loadGoogle() {
+async function loadShortcut(targetUrl) {
+    const searchEngine = document.getElementById("sj-search-engine");
+    
+    // 1. Krypter/behandle nettadressen først
+    const url = search(targetUrl, searchEngine.value);
+
+    // 2. Sjekk om rammen allerede er laget
     if (window.currentFrame) {
-        const specificUrl = "https://google.com"; // Bytt ut med ønsket side
-        const searchEngine = document.getElementById("sj-search-engine");
-        
-        const url = search(specificUrl, searchEngine.value);
         window.currentFrame.go(url);
-    } else {
-        alert("Rammen er ikke opprettet ennå. Send inn skjemaet først.");
+        return;
     }
+
+    // 3. Hvis rammen IKKE finnes, må vi starte proxyen først (samme som i submit-eventet ditt):
+    try {
+        await registerSW();
+    } catch (err) {
+        const error = document.getElementById("sj-error");
+        const errorCode = document.getElementById("sj-error-code");
+        error.textContent = "Failed to register service worker.";
+        errorCode.textContent = err.toString();
+        throw err;
+    }
+
+    let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
+    if ((await connection.getTransport()) !== "/libcurl/index.mjs") {
+        await connection.setTransport("/libcurl/index.mjs", [{
+            websocket: wispUrl
+        }]);
+    }
+
+    // 4. Lag rammen og send brukeren til snarveien
+    const frame = scramjet.createFrame();
+    frame.frame.id = "sj-frame";
+    document.body.appendChild(frame.frame);
+    
+    // Lagre rammen globalt så knappen husker den til neste gang
+    window.currentFrame = frame; 
+    
+    frame.go(url);
 }
 
-
-
-function loadYoutube() {
-    if (window.currentFrame) {
-        const specificUrl = "https://google.com"; // Bytt ut med ønsket side
-        const searchEngine = document.getElementById("sj-search-engine");
-        
-        const url = search(specificUrl, searchEngine.value);
-        window.currentFrame.go(url);
-    } else {
-        alert("Rammen er ikke opprettet ennå. Send inn skjemaet først.");
-    }
-}
 
