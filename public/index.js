@@ -1,15 +1,15 @@
-let currentUrl = "";
-let globalConnection; 
+"use strict";
 
-"use strict"; /** * @type {HTMLFormElement} */
-const form = document.getElementById("sj-form"); /** * @type {HTMLInputElement} */
-const address = document.getElementById("sj-address"); /** * @type {HTMLInputElement} */
-const searchEngine = document.getElementById("sj-search-engine"); /** * @type {HTMLParagraphElement} */
-const error = document.getElementById("sj-error"); /** * @type {HTMLPreElement} */
+let currentUrl = "";
+let globalConnection;
+
+const form = document.getElementById("sj-form");
+const address = document.getElementById("sj-address");
+const searchEngine = document.getElementById("sj-search-engine");
+const error = document.getElementById("sj-error");
 const errorCode = document.getElementById("sj-error-code");
-const {
-    ScramjetController
-} = $scramjetLoadController();
+
+const { ScramjetController } = $scramjetLoadController();
 const scramjet = new ScramjetController({
     files: {
         wasm: "/scram/scramjet.wasm.wasm",
@@ -18,7 +18,9 @@ const scramjet = new ScramjetController({
     },
 });
 scramjet.init();
-connection = new BareMux.BareMuxConnection("/baremux/worker.js");
+
+const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
+
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
     try {
@@ -28,65 +30,50 @@ form.addEventListener("submit", async (event) => {
         errorCode.textContent = err.toString();
         throw err;
     }
+
     const url = search(address.value, searchEngine.value);
     let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
+
     if ((await connection.getTransport()) !== "/libcurl/index.mjs") {
-        await connection.setTransport("/libcurl/index.mjs", [{
-            websocket: wispUrl
-        }, ]);
+        await connection.setTransport("/libcurl/index.mjs", [{ websocket: wispUrl }]);
     }
+
     const frame = scramjet.createFrame();
     frame.frame.id = "sj-frame";
     document.body.appendChild(frame.frame);
     frame.go(url);
 
+    document.body.insertAdjacentHTML("beforeend", `
+        <div style="display: flex; gap: 10px; background:rgba(255,255,255,0.43); padding: 6px;">
+            <input id="sj-new-address" style="z-index:999999; background:rgba(0,0,0,0.73); height: 30px; width: 250px; color: white; border-radius: 6px; border: none; padding: 0 8px;" placeholder="Search or enter a url." />
+            <button style="z-index:9999; width: 35px; border-radius: 8px; background:rgba(0,0,0,0.73); color: rgba(209,209,209,0.81); height: 36px;" id="reloadBtn">⟳</button>
+        </div>
+    `);
 
+    const newAddress = document.getElementById("sj-new-address");
+    newAddress.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            const newUrl = search(newAddress.value, searchEngine.value);
+            frame.go(newUrl);
+        }
+    });
 
-	document.body.insertAdjacentHTML("beforeend", `
-		<div style="display: flex; gap: 10px; background:rgba(255, 255, 255, 0.43); height: 4px;">
-  <input id="sj-new-address" style="z-index:999999; background:rgba(0, 0, 0, 0.73); height: 10px; width: 155px;" placeholder="Search or enter a url." />
-  <button style="z-index: 9999; width: 35px; border-radius: 8px; background:rgba(0, 0, 0, 0.73); color: rgba(209, 209, 209, 0.81); height: 40px;" id="reloadBtn">⟳</button>
-  </div>
-`);
-
-const newAddress = document.getElementById("sj-new-address");
-
-newAddress.addEventListener("keydown", (e) => {
-	if (e.key === "Enter") {
-		const url = search(newAddress.value, searchEngine.value);
-		frame.go(url);
-	}
+    const reloadBtn = document.getElementById("reloadBtn");
+    reloadBtn.addEventListener("click", () => {
+        frame.go(frame.url.href);
+    });
 });
-
-
-
-reloadBtn.addEventListener("click", () => {
-	frame.go(frame.url.href);
-});
-
-
-});
-
-
-
-
-
-
 
 
 async function loadShortcut(targetUrl) {
     const searchEngine = document.getElementById("sj-search-engine");
-    
-    // 1. Krypter/behandle nettadressen først
     const url = search(targetUrl, searchEngine.value);
 
-    // 2. Sjekk om rammen allerede er laget (hvis ja, bare gå til siden)
     if (window.currentFrame) {
         window.currentFrame.go(url);
         return;
     }
 
-    // 3. Hvis rammen IKKE finnes, må vi starte proxyen
     try {
         await registerSW();
     } catch (err) {
@@ -97,67 +84,47 @@ async function loadShortcut(targetUrl) {
         throw err;
     }
 
-    // 4. Hent BareMux-tilkoblingen
     const shortConnection = new BareMux.BareMuxConnection("/baremux/worker.js");
-
     let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
-    
+
     if ((await shortConnection.getTransport()) !== "/libcurl/index.mjs") {
-        await shortConnection.setTransport("/libcurl/index.mjs", [{
-            websocket: wispUrl
-        }]);
+        await shortConnection.setTransport("/libcurl/index.mjs", [{ websocket: wispUrl }]);
     }
 
-    // 5. Lag rammen og send brukeren til snarveien
     const frame = scramjet.createFrame();
     frame.frame.id = "sj-frame";
     document.body.appendChild(frame.frame);
-    
-    // Lagre rammen globalt så den husker den til neste klikk
-    window.currentFrame = frame; 
-    
+    window.currentFrame = frame;
     frame.go(url);
 
-    // 6. HER LEGGER VI TIL DE MANGLENDE ELEMENTENE (Samme som i submit-eventet ditt)
-	document.body.insertAdjacentHTML("beforeend", `
-		<div style="display: flex; gap: 10px; background:rgba(255, 255, 255, 0.43); height: 4px;">
-  <input id="sj-new-address" style="z-index:999999; background:rgba(0, 0, 0, 0.73); height: 10px; width: 155px;" placeholder="Search or enter a url." />
-  <button style="z-index: 9999; width: 35px; border-radius: 8px; background:rgba(0, 0, 0, 0.73); color: rgba(209, 209, 209, 0.81); height: 40px;" id="reloadBtn">⟳</button>
-  </div>
+    document.body.insertAdjacentHTML("beforeend", `
+        <div style="display: flex; gap: 10px; background:rgba(255,255,255,0.43); padding: 6px;">
+            <input id="sj-new-address" style="z-index:999999; background:rgba(0,0,0,0.73); height: 30px; width: 250px; color: white; border-radius: 6px; border: none; padding: 0 8px;" placeholder="Search or enter a url." />
+            <button style="z-index:9999; width: 35px; border-radius: 8px; background:rgba(0,0,0,0.73); color: rgba(209,209,209,0.81); height: 36px;" id="reloadBtn">⟳</button>
+        </div>
     `);
 
     const newAddress = document.getElementById("sj-new-address");
-
     newAddress.addEventListener("keydown", (e) => {
-	    if (e.key === "Enter") {
-		    const url = search(newAddress.value, searchEngine.value);
-		    frame.go(url);
-	    }
+        if (e.key === "Enter") {
+            const newUrl = search(newAddress.value, searchEngine.value);
+            frame.go(newUrl);
+        }
     });
-
-
-
-
-    function isProbablyMobile() {
-          const hasTouch = navigator.maxTouchPoints > 0 || "ontouchstart" in window;
-            const smallScreen = window.matchMedia("(max-width: 768px)").matches;
-              const mobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-                return (hasTouch && smallScreen) || mobileUA;
-                }
-
-                if (isProbablyMobile()) {
-                  alert("PGIS proxy may not work properly on mobile devices.");
-                  }
-    }
 
     const reloadBtn = document.getElementById("reloadBtn");
     reloadBtn.addEventListener("click", () => {
-	    frame.go(frame.url.href);
+        frame.go(frame.url.href);
     });
+
+    function isProbablyMobile() {
+        const hasTouch = navigator.maxTouchPoints > 0 || "ontouchstart" in window;
+        const smallScreen = window.matchMedia("(max-width: 768px)").matches;
+        const mobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        return (hasTouch && smallScreen) || mobileUA;
+    }
+
+    if (isProbablyMobile()) {
+        alert("PGIS proxy may not work properly on mobile devices.");
+    }
 }
-
-
-
-
-
