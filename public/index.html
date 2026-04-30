@@ -111,6 +111,14 @@ a {
 			<input id="sj-address" type="text" placeholder="search or enter an url" />
 			<br>
 		</form>
+    <script>
+      const form = document.getElementById("sj-form");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault(); // stops refresh
+          doSomething();
+          });
+          </script>
         <br><br>
 		<div>
 			<br>
