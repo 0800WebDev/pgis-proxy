@@ -44,7 +44,7 @@ form.addEventListener("submit", async (event) => {
     frame.go(url);
 
     document.body.insertAdjacentHTML("beforeend", `
-       <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.43); padding: 6px; align-items: center; border-radius: 8px; width: fit-content; margin: 10px auto;"> 
+        <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.43); padding: 6px; align-items: center; border-radius: 8px; width: fit-content; position: fixed; bottom: 20px; left: 20px; z-index: 1000000;"> 
             <input id="sj-new-address" style="background: rgba(0,0,0,0.73); height: 30px !important; width: 250px; color: white; border-radius: 6px; border: none; padding: 0 8px !important; box-sizing: border-box;" placeholder="Search or enter a url." /> 
             <button style="width: 35px; border-radius: 6px; background: rgba(0,0,0,0.73); color: rgba(209,209,209,0.81); height: 30px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-sizing: border-box;" id="reloadBtn">⟳</button> 
         </div>
@@ -99,7 +99,7 @@ async function loadShortcut(targetUrl) {
     frame.go(url);
 
     document.body.insertAdjacentHTML("beforeend", `
-       <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.43); padding: 6px; align-items: center; border-radius: 8px; width: fit-content; margin: 10px auto;"> 
+        <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.43); padding: 6px; align-items: center; border-radius: 8px; width: fit-content; position: fixed; bottom: 20px; left: 20px; z-index: 1000000;"> 
             <input id="sj-new-address" style="background: rgba(0,0,0,0.73); height: 30px !important; width: 250px; color: white; border-radius: 6px; border: none; padding: 0 8px !important; box-sizing: border-box;" placeholder="Search or enter a url." /> 
             <button style="width: 35px; border-radius: 6px; background: rgba(0,0,0,0.73); color: rgba(209,209,209,0.81); height: 30px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-sizing: border-box;" id="reloadBtn">⟳</button> 
         </div>
