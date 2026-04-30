@@ -248,22 +248,6 @@ particlesJS('particles-js', {
 });
 
       </script> 
-      <script>
-const searchInput = document.getElementById('search');
-const gameDivs = document.querySelectorAll('.gamediv');
-
-searchInput.addEventListener('input', () => {
-    const query = searchInput.value.toLowerCase();
-
-    gameDivs.forEach(div => {
-        const gameName = div.querySelector('b').textContent.toLowerCase();
-        if (gameName.includes(query) || query === '') {
-            div.style.display = 'flex'; // show matching games
-        } else {
-            div.style.display = 'none'; // hide non-matching games
-        }
-    });
-});
-</script>
+    
 	</body>
 </html>
