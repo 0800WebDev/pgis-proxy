@@ -10,7 +10,7 @@ deploy_site:
     # 1. Login
     - appwrite client --endpoint https://cloud.appwrite.io/v1 --project-id 69f4d43e001852db5970 --key $APPWRITE_API_KEY
     
-    # 2. Force-create the appwrite.json file so the CLI has all its answers
+    # 2. Create the config file
     - |
       echo '{
         "projectId": "69f4d43e001852db5970",
@@ -25,7 +25,7 @@ deploy_site:
         ]
       }' > appwrite.json
 
-    # 3. Push using the local config
-    - appwrite push site --all --yes
+    # 3. Push using --force (this replaces --yes)
+    - appwrite push site --all --force
   only:
     - main
