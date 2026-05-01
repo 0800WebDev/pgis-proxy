@@ -1,7 +1,5 @@
 "use strict";
 
-const SECRET_KEY = "k7Xm2#pQ9nLw4@Rz"; // same key in both files
-
 function xorCipher(str, key) {
     let result = "";
     for (let i = 0; i < str.length; i++) {
@@ -14,7 +12,8 @@ function xorCipher(str, key) {
 
 function encode(url) {
     if (!url) return url;
-    return btoa(xorCipher(url, SECRET_KEY))
+    const key = "k7Xm2#pQ9nLw4@Rz";
+    return btoa(xorCipher(url, key))
         .replace(/\+/g, "-")
         .replace(/\//g, "_")
         .replace(/=/g, "");
@@ -22,9 +21,10 @@ function encode(url) {
 
 function decode(encoded) {
     if (!encoded) return encoded;
+    const key = "k7Xm2#pQ9nLw4@Rz";
     let b64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
     while (b64.length % 4) b64 += "=";
-    return xorCipher(atob(b64), SECRET_KEY);
+    return xorCipher(atob(b64), key);
 }
 
 let currentUrl = "";
@@ -39,7 +39,29 @@ const errorCode = document.getElementById("sj-error-code");
 const { ScramjetController } = $scramjetLoadController();
 const scramjet = new ScramjetController({
     prefix: "/scramjet/",
-    codec: { encode, decode }, // <-- custom codec goes here
+    codec: {
+        encode: `(url) => {
+            if (!url) return url;
+            const key = "k7Xm2#pQ9nLw4@Rz";
+            let result = "";
+            for (let i = 0; i < url.length; i++) {
+                result += String.fromCharCode(url.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            }
+            return btoa(result).replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=/g, "");
+        }`,
+        decode: `(encoded) => {
+            if (!encoded) return encoded;
+            const key = "k7Xm2#pQ9nLw4@Rz";
+            let b64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
+            while (b64.length % 4) b64 += "=";
+            const str = atob(b64);
+            let result = "";
+            for (let i = 0; i < str.length; i++) {
+                result += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            }
+            return result;
+        }`,
+    },
     files: {
         wasm: "/scram/scramjet.wasm.wasm",
         all: "/scram/scramjet.all.js",
