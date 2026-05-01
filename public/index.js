@@ -41,18 +41,11 @@ function getCodec(enabled) {
         return {
             encode: `(url) => {
                 if (!url) return url;
-                return btoa(unescape(encodeURIComponent(url)))
-                    .replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=/g, "");
+                return url.replace("://", ",,,");
             }`,
             decode: `(encoded) => {
                 if (!encoded) return encoded;
-                try {
-                    let b64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
-                    while (b64.length % 4) b64 += "=";
-                    return decodeURIComponent(escape(atob(b64)));
-                } catch(e) {
-                    return encoded;
-                }
+                return encoded.replace(",,,", "://");
             }`,
         };
     }
