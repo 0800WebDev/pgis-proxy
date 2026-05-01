@@ -27,4 +27,4 @@ deploy:
     - npm run build
     # This command is what 'connects' GitLab to that Manual site
     - appwrite client --endpoint https://appwrite.io --projectId 69f4dcda002ebf97e364 --key $APPWRITE_API_KEY
-    - appwrite deploy site --siteId 69f4db06000679c4a7ca --path ./public --yes
+    - appwrite deploy site --siteId 69f4db06000679c4a7ca --path ./ --yes
