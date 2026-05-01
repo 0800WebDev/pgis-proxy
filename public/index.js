@@ -42,7 +42,7 @@ function getCodec(enabled) {
     }
 }
 
-// Inject toggle button
+// Create toggle button (appended after scramjet.init())
 const toggleBtn = document.createElement("button");
 toggleBtn.id = "codec-toggle-btn";
 toggleBtn.textContent = isCodecEnabled() ? "URL Mask: ON" : "URL Mask: OFF";
@@ -71,7 +71,6 @@ toggleBtn.addEventListener("click", async () => {
     }
     location.reload();
 });
-document.body.appendChild(toggleBtn);
 
 let currentUrl = "";
 let globalConnection;
@@ -93,6 +92,9 @@ const scramjet = new ScramjetController({
     },
 });
 scramjet.init();
+
+// Append toggle button AFTER scramjet.init()
+document.body.appendChild(toggleBtn);
 
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
 
