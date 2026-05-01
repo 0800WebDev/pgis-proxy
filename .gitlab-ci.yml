@@ -7,8 +7,8 @@ deploy_site:
   script:
     - npm install -g appwrite-cli
     
-    # Use --projectId (exactly like this)
-    - appwrite client --endpoint https://appwrite.io --projectId 69f4e17f00049568c8df --key $APPWRITE_API_KEY
+    # Using --project-id exactly as the error suggested
+    - appwrite client --endpoint https://appwrite.io --project-id 69f4e17f00049568c8df --key $APPWRITE_API_KEY
     
     # Deploy your folder
     - appwrite deploy site --siteId 69f4e17f00049568c8df --path ./public --yes
