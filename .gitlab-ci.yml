@@ -10,22 +10,10 @@ deploy_site:
     # 1. Login
     - appwrite client --endpoint https://cloud.appwrite.io/v1 --project-id 69f4d43e001852db5970 --key $APPWRITE_API_KEY
     
-    # 2. Create the config file
-    - |
-      echo '{
-        "projectId": "69f4d43e001852db5970",
-        "sites": [
-          {
-            "$id": "69f4e17f00049568c8df",
-            "name": "My Site",
-            "root": "./",
-            "commands": "echo skipping_build",
-            "output": "./"
-          }
-        ]
-      }' > appwrite.json
+    # 2. Create the file using a single-line echo to prevent GitLab collapsing it
+    - echo '{"projectId":"69f4d43e001852db5970","sites":[{"$id":"69f4e17f00049568c8df","name":"My Site","root":"./","commands":"echo build_skipped","output":"./"}]}' > appwrite.json
 
-    # 3. Push using --force (this replaces --yes)
+    # 3. Use 'all' and 'force' to push
     - appwrite push site --all --force
   only:
     - main
