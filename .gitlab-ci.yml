@@ -10,7 +10,7 @@ deploy_functions:
     
     # 2. Authenticate using the stored variables
     # Replace [PROJECT_ID] with your actual project ID from Appwrite settings
-    - appwrite client --endpoint https://cloud.appwrite.io/v1 --projectId [PROJECT_ID] --key $APPWRITE_API_KEY
+    - appwrite client --endpoint https://cloud.appwrite.io/v1 --projectId 69f4dcda002ebf97e364 --key $APPWRITE_API_KEY
     
     # 3. Deploy your functions
     # Use --all to deploy all functions or specify a single one
@@ -26,5 +26,5 @@ deploy:
     - npm install
     - npm run build
     # This command is what 'connects' GitLab to that Manual site
-    - appwrite client --endpoint https://appwrite.io --projectId [YOUR_PROJECT_ID] --key $APPWRITE_API_KEY
+    - appwrite client --endpoint https://appwrite.io --projectId 69f4dcda002ebf97e364 --key $APPWRITE_API_KEY
     - appwrite deploy site --siteId 69f4db06000679c4a7ca --path ./dist --yes
