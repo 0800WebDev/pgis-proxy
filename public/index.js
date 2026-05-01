@@ -1,6 +1,6 @@
 "use strict";
 
-const SECRET_KEY = "pgis2024xor"; // change this to something secret
+const SECRET_KEY = "k7Xm2#pQ9nLw4@Rz"; // change this to something secret
 
 function xorEncode(str, key) {
     return btoa(
