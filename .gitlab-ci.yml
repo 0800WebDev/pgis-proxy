@@ -6,8 +6,26 @@ deploy_site:
   image: node:latest
   script:
     - npm install -g appwrite-cli
+    
+    # 1. Login
     - appwrite client --endpoint https://cloud.appwrite.io/v1 --project-id 69f4d43e001852db5970 --key $APPWRITE_API_KEY
-    # The JSON now has the command, so this should run cleanly
-    - appwrite push site --all --force
+    
+    # 2. Force-create the appwrite.json file so the CLI has all its answers
+    - |
+      echo '{
+        "projectId": "69f4d43e001852db5970",
+        "sites": [
+          {
+            "$id": "69f4e17f00049568c8df",
+            "name": "My Site",
+            "root": "./",
+            "commands": "echo skipping_build",
+            "output": "./"
+          }
+        ]
+      }' > appwrite.json
+
+    # 3. Push using the local config
+    - appwrite push site --all --yes
   only:
     - main
