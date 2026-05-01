@@ -37,15 +37,15 @@ function getCodec(enabled) {
                 }
             }`,
         };
-    } else {
+   } else {
         return {
             encode: `(url) => {
                 if (!url) return url;
-                return url.replace("://", "://");
+                return encodeURIComponent(url);
             }`,
             decode: `(encoded) => {
                 if (!encoded) return encoded;
-                return encoded.replace("://", "://");
+                return decodeURIComponent(encoded);
             }`,
         };
     }
