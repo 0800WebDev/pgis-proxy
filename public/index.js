@@ -76,7 +76,7 @@ function injectToggleButton() {
     const enabled = isCodecEnabled();
     const btn = document.createElement("button");
     btn.id = "codec-toggle-btn";
-    btn.textContent = enabled ? "🔒 URL Mask: ON" : "🔓 URL Mask: OFF";
+    btn.textContent = enabled ? "URL Mask: ON" : "URL Mask: OFF";
     btn.title = "Toggle URL masking (requires page reload to take effect)";
     btn.style.cssText = `
         position: fixed;
