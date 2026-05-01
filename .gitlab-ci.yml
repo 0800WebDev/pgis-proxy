@@ -6,7 +6,7 @@ deploy_site:
   image: node:latest
   script:
     - npm install -g appwrite-cli
-    - appwrite client --endpoint https://appwrite.io --project-id 69f4d43e001852db5970 --key $APPWRITE_API_KEY
+    - appwrite client --endpoint https://cloud.appwrite.io/v1 --project-id 69f4d43e001852db5970 --key $APPWRITE_API_KEY
     # The JSON now has the command, so this should run cleanly
     - appwrite push site --all --force
   only:
