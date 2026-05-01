@@ -17,23 +17,15 @@ function getCodec(enabled) {
         return {
             encode: `(url) => {
                 if (!url) return url;
-                try {
-                    const u = new URL(url);
-                    u.hostname = u.hostname.replace(/\./g, ",");
-                    return u.toString();
-                } catch(e) {
-                    return url;
-                }
+                return url.replace(/\/\/([^/]+)/, (match, host) => {
+                    return "//" + host.replace(/\./g, ",");
+                });
             }`,
             decode: `(encoded) => {
                 if (!encoded) return encoded;
-                try {
-                    return encoded.replace(/\/\/([^/]+)/, (match, host) => {
-                        return "//" + host.replace(/,/g, ".");
-                    });
-                } catch(e) {
-                    return encoded;
-                }
+                return encoded.replace(/\/\/([^/]+)/, (match, host) => {
+                    return "//" + host.replace(/,/g, ".");
+                });
             }`,
         };
     } else {
