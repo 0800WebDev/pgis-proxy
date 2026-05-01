@@ -42,45 +42,6 @@ function getCodec(enabled) {
     }
 }
 
-// Create toggle button (appended after scramjet.init())
-const toggleBtn = document.createElement("button");
-toggleBtn.id = "codec-toggle-btn";
-toggleBtn.textContent = isCodecEnabled() ? "URL Mask: ON" : "URL Mask: OFF";
-toggleBtn.style.cssText = `
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    z-index: 9999999;
-    background: ${isCodecEnabled() ? "rgba(0,180,80,0.85)" : "rgba(180,0,0,0.75)"};
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-size: 13px;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-`;
-toggleBtn.addEventListener("click", async () => {
-    const next = !isCodecEnabled();
-    setCodecEnabled(next);
-    if (navigator.serviceWorker.controller) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for (const reg of registrations) {
-            await reg.unregister();
-        }
-    }
-    location.reload();
-});
-
-let currentUrl = "";
-let globalConnection;
-
-const form = document.getElementById("sj-form");
-const address = document.getElementById("sj-address");
-const searchEngine = document.getElementById("sj-search-engine");
-const error = document.getElementById("sj-error");
-const errorCode = document.getElementById("sj-error-code");
-
 const { ScramjetController } = $scramjetLoadController();
 const scramjet = new ScramjetController({
     prefix: "/scramjet/",
@@ -93,51 +54,87 @@ const scramjet = new ScramjetController({
 });
 scramjet.init();
 
-// Append toggle button AFTER scramjet.init()
-document.body.appendChild(toggleBtn);
-
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
 
-form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    try {
-        await registerSW();
-    } catch (err) {
-        error.textContent = "Failed to register service worker.";
-        errorCode.textContent = err.toString();
-        throw err;
-    }
-
-    const url = search(address.value, searchEngine.value);
-    let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
-
-    if ((await connection.getTransport()) !== "/libcurl/index.mjs") {
-        await connection.setTransport("/libcurl/index.mjs", [{ websocket: wispUrl }]);
-    }
-
-    const frame = scramjet.createFrame();
-    frame.frame.id = "sj-frame";
-    document.body.appendChild(frame.frame);
-    frame.go(url);
-
-    document.body.insertAdjacentHTML("beforeend", `
-        <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.43); padding: 6px; align-items: center; border-radius: 8px; width: fit-content; position: fixed; bottom: 20px; left: 20px; z-index: 1000000;"> 
-            <input id="sj-new-address" style="background: rgba(0,0,0,0.73); height: 30px !important; width: 250px; color: white; border-radius: 6px; border: none; padding: 0 8px !important; box-sizing: border-box;" placeholder="Search or enter a url." /> 
-            <button style="width: 35px; border-radius: 6px; background: rgba(0,0,0,0.73); color: rgba(209,209,209,0.81); height: 30px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-sizing: border-box;" id="reloadBtn">⟳</button> 
-        </div>
-    `);
-
-    const newAddress = document.getElementById("sj-new-address");
-    newAddress.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            const newUrl = search(newAddress.value, searchEngine.value);
-            frame.go(newUrl);
+document.addEventListener("DOMContentLoaded", () => {
+    // Inject toggle button
+    const toggleBtn = document.createElement("button");
+    toggleBtn.id = "codec-toggle-btn";
+    toggleBtn.textContent = isCodecEnabled() ? "🔒 URL Mask: ON" : "🔓 URL Mask: OFF";
+    toggleBtn.style.cssText = `
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        z-index: 9999999;
+        background: ${isCodecEnabled() ? "rgba(0,180,80,0.85)" : "rgba(180,0,0,0.75)"};
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 13px;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    `;
+    toggleBtn.addEventListener("click", async () => {
+        const next = !isCodecEnabled();
+        setCodecEnabled(next);
+        if (navigator.serviceWorker.controller) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (const reg of registrations) {
+                await reg.unregister();
+            }
         }
+        location.reload();
     });
+    document.body.appendChild(toggleBtn);
 
-    const reloadBtn = document.getElementById("reloadBtn");
-    reloadBtn.addEventListener("click", () => {
-        frame.go(frame.url.href);
+    const form = document.getElementById("sj-form");
+    const address = document.getElementById("sj-address");
+    const searchEngine = document.getElementById("sj-search-engine");
+    const error = document.getElementById("sj-error");
+    const errorCode = document.getElementById("sj-error-code");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        try {
+            await registerSW();
+        } catch (err) {
+            error.textContent = "Failed to register service worker.";
+            errorCode.textContent = err.toString();
+            throw err;
+        }
+
+        const url = search(address.value, searchEngine.value);
+        let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
+
+        if ((await connection.getTransport()) !== "/libcurl/index.mjs") {
+            await connection.setTransport("/libcurl/index.mjs", [{ websocket: wispUrl }]);
+        }
+
+        const frame = scramjet.createFrame();
+        frame.frame.id = "sj-frame";
+        document.body.appendChild(frame.frame);
+        frame.go(url);
+
+        document.body.insertAdjacentHTML("beforeend", `
+            <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.43); padding: 6px; align-items: center; border-radius: 8px; width: fit-content; position: fixed; bottom: 20px; left: 20px; z-index: 1000000;"> 
+                <input id="sj-new-address" style="background: rgba(0,0,0,0.73); height: 30px !important; width: 250px; color: white; border-radius: 6px; border: none; padding: 0 8px !important; box-sizing: border-box;" placeholder="Search or enter a url." /> 
+                <button style="width: 35px; border-radius: 6px; background: rgba(0,0,0,0.73); color: rgba(209,209,209,0.81); height: 30px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-sizing: border-box;" id="reloadBtn">⟳</button> 
+            </div>
+        `);
+
+        const newAddress = document.getElementById("sj-new-address");
+        newAddress.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                const newUrl = search(newAddress.value, searchEngine.value);
+                frame.go(newUrl);
+            }
+        });
+
+        const reloadBtn = document.getElementById("reloadBtn");
+        reloadBtn.addEventListener("click", () => {
+            frame.go(frame.url.href);
+        });
     });
 });
 
