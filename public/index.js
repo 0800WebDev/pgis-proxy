@@ -42,24 +42,13 @@ const scramjet = new ScramjetController({
     codec: {
         encode: `(url) => {
             if (!url) return url;
-            const key = "k7Xm2#pQ9nLw4@Rz";
-            let result = "";
-            for (let i = 0; i < url.length; i++) {
-                result += String.fromCharCode(url.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-            }
-            return btoa(result).replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=/g, "");
+            return btoa(url).replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=/g, "");
         }`,
         decode: `(encoded) => {
             if (!encoded) return encoded;
-            const key = "k7Xm2#pQ9nLw4@Rz";
             let b64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
             while (b64.length % 4) b64 += "=";
-            const str = atob(b64);
-            let result = "";
-            for (let i = 0; i < str.length; i++) {
-                result += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-            }
-            return result;
+            return atob(b64);
         }`,
     },
     files: {
