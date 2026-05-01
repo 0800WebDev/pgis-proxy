@@ -97,7 +97,7 @@ function injectToggleButton() {
     btn.addEventListener("click", () => {
         const next = !isCodecEnabled();
         setCodecEnabled(next);
-        btn.textContent = next ? "🔒&#xFE0E; URL Mask: ON" : "🔓&#xFE0E; URL Mask: OFF";
+        btn.textContent = next ? " URL Mask: ON" : " URL Mask: OFF";
         btn.style.background = next ? "rgba(0,180,80,0.85)" : "rgba(180,0,0,0.75)";
         // Reload so ScramjetController re-initializes with new codec
         location.reload();
