@@ -6,8 +6,11 @@ deploy_site:
   image: node:latest
   script:
     - npm install -g appwrite-cli
+    
+    # Login
     - appwrite client --endpoint https://cloud.appwrite.io/v1 --project-id 69f4d43e001852db5970 --key $APPWRITE_API_KEY
-    # Adding --force to ensure it doesn't ask for any confirmation
-    - appwrite push site --all --force
+    
+    # The "yes" command sends an empty Enter key to bypass the build command question
+    - yes "" | appwrite push site --all --force
   only:
     - main
