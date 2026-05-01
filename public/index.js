@@ -42,15 +42,11 @@ const scramjet = new ScramjetController({
     codec: {
         encode: `(url) => {
             if (!url) return url;
-            return encodeURIComponent(url);
+            return url.replace(/\\./g, ",");
         }`,
         decode: `(encoded) => {
             if (!encoded) return encoded;
-            try {
-                return decodeURIComponent(encoded);
-            } catch(e) {
-                return encoded;
-            }
+            return encoded.replace(/,/g, ".");
         }`,
     },
     files: {
