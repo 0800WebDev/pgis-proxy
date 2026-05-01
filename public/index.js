@@ -1,27 +1,30 @@
 "use strict";
 
-const SECRET_KEY = "k7Xm2#pQ9nLw4@Rz"; // your key
+const SECRET_KEY = "k7Xm2#pQ9nLw4@Rz"; // same key in both files
 
-function xorEncode(str, key) {
-    return btoa(
-        str.split("").map((c, i) =>
-            String.fromCharCode(c.charCodeAt(0) ^ key.charCodeAt(i % key.length))
-        ).join("")
-    ).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+function xorCipher(str, key) {
+    let result = "";
+    for (let i = 0; i < str.length; i++) {
+        result += String.fromCharCode(
+            str.charCodeAt(i) ^ key.charCodeAt(i % key.length)
+        );
+    }
+    return result;
 }
 
-function xorDecode(encoded, key) {
+function encode(url) {
+    if (!url) return url;
+    return btoa(xorCipher(url, SECRET_KEY))
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=/g, "");
+}
+
+function decode(encoded) {
+    if (!encoded) return encoded;
     let b64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
     while (b64.length % 4) b64 += "=";
-    const str = atob(b64);
-    return str.split("").map((c, i) =>
-        String.fromCharCode(c.charCodeAt(0) ^ key.charCodeAt(i % key.length))
-    ).join("");
-}
-
-// Wraps scramjet's encode so the URL bar shows encoded text
-function proxyUrl(rawUrl) {
-    return scramjet.encodeUrl(rawUrl); // scramjet handles its own routing internally
+    return xorCipher(atob(b64), SECRET_KEY);
 }
 
 let currentUrl = "";
@@ -35,6 +38,8 @@ const errorCode = document.getElementById("sj-error-code");
 
 const { ScramjetController } = $scramjetLoadController();
 const scramjet = new ScramjetController({
+    prefix: "/scramjet/",
+    codec: { encode, decode }, // <-- custom codec goes here
     files: {
         wasm: "/scram/scramjet.wasm.wasm",
         all: "/scram/scramjet.all.js",
@@ -55,8 +60,7 @@ form.addEventListener("submit", async (event) => {
         throw err;
     }
 
-    const rawUrl = search(address.value, searchEngine.value);
-
+    const url = search(address.value, searchEngine.value);
     let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
 
     if ((await connection.getTransport()) !== "/libcurl/index.mjs") {
@@ -66,7 +70,7 @@ form.addEventListener("submit", async (event) => {
     const frame = scramjet.createFrame();
     frame.frame.id = "sj-frame";
     document.body.appendChild(frame.frame);
-    frame.go(rawUrl); // pass real URL to scramjet directly
+    frame.go(url);
 
     document.body.insertAdjacentHTML("beforeend", `
         <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.43); padding: 6px; align-items: center; border-radius: 8px; width: fit-content; position: fixed; bottom: 20px; left: 20px; z-index: 1000000;"> 
@@ -78,8 +82,8 @@ form.addEventListener("submit", async (event) => {
     const newAddress = document.getElementById("sj-new-address");
     newAddress.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-            const newRawUrl = search(newAddress.value, searchEngine.value);
-            frame.go(newRawUrl);
+            const newUrl = search(newAddress.value, searchEngine.value);
+            frame.go(newUrl);
         }
     });
 
@@ -92,10 +96,10 @@ form.addEventListener("submit", async (event) => {
 
 async function loadShortcut(targetUrl) {
     const searchEngine = document.getElementById("sj-search-engine");
-    const rawUrl = search(targetUrl, searchEngine.value);
+    const url = search(targetUrl, searchEngine.value);
 
     if (window.currentFrame) {
-        window.currentFrame.go(rawUrl);
+        window.currentFrame.go(url);
         return;
     }
 
@@ -120,7 +124,7 @@ async function loadShortcut(targetUrl) {
     frame.frame.id = "sj-frame";
     document.body.appendChild(frame.frame);
     window.currentFrame = frame;
-    frame.go(rawUrl);
+    frame.go(url);
 
     document.body.insertAdjacentHTML("beforeend", `
         <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.43); padding: 6px; align-items: center; border-radius: 8px; width: fit-content; position: fixed; bottom: 20px; left: 20px; z-index: 1000000;"> 
@@ -132,8 +136,8 @@ async function loadShortcut(targetUrl) {
     const newAddress = document.getElementById("sj-new-address");
     newAddress.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-            const newRawUrl = search(newAddress.value, searchEngine.value);
-            frame.go(newRawUrl);
+            const newUrl = search(newAddress.value, searchEngine.value);
+            frame.go(newUrl);
         }
     });
 
