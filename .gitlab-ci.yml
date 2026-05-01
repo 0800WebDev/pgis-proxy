@@ -1,28 +1,18 @@
 stages:
   - deploy
 
-deploy_functions:
-  stage: deploy
-  image: node:latest  # Appwrite CLI requires Node.js
-  script:
-    # 1. Install the Appwrite CLI globally
-    - npm install -g appwrite-cli
-    
-    # 2. Authenticate using the stored variables
-    # Replace [PROJECT_ID] with your actual project ID from Appwrite settings
-    - appwrite client --endpoint https://cloud.appwrite.io/v1 --projectId 69f4dcda002ebf97e364 --key $APPWRITE_API_KEY
-    
-    # 3. Deploy your functions
-    # Use --all to deploy all functions or specify a single one
-    - appwrite deploy function --all --yes
-  only:
-    - main  # Only run this on pushes to the main branch
-
-deploy:
+deploy_site:
   stage: deploy
   image: node:latest
   script:
+    # 1. Install the CLI
     - npm install -g appwrite-cli
-    - appwrite client --endpoint https://appwrite.io --projectId 69f4e17f00049568c8df --key $APPWRITE_API_KEY
-    # Point this ONLY to the folder with your index.html
+    
+    # 2. Log in using your project ID and the Secret Key from your variables
+    - appwrite client --endpoint https://appwrite.io --project 69f4e17f00049568c8df --key $APPWRITE_API_KEY
+    
+    # 3. Push your public folder to the specific Site container
+    # REPLACE [YOUR_SITE_ID] with the ID from the Appwrite Sites dashboard
     - appwrite deploy site --siteId 69f4e17f00049568c8df --path ./public --yes
+  only:
+    - main
