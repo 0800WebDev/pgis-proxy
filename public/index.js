@@ -19,7 +19,7 @@ function getCodec(enabled) {
                 if (!url) return url;
                 try {
                     const u = new URL(url);
-                    u.hostname = u.hostname.replace(/\\./g, ",");
+                    u.hostname = u.hostname.replace(/\./g, ",");
                     return u.toString();
                 } catch(e) {
                     return url;
@@ -28,16 +28,15 @@ function getCodec(enabled) {
             decode: `(encoded) => {
                 if (!encoded) return encoded;
                 try {
-                    const withDots = encoded.replace(/:\\/\\/([^/]+)/, (match, host) => {
-                        return "://" + host.replace(/,/g, ".");
+                    return encoded.replace(/\/\/([^/]+)/, (match, host) => {
+                        return "//" + host.replace(/,/g, ".");
                     });
-                    return withDots;
                 } catch(e) {
                     return encoded;
                 }
             }`,
         };
-   } else {
+    } else {
         return {
             encode: `(url) => {
                 if (!url) return url;
