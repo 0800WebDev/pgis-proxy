@@ -1,11 +1,11 @@
 "use strict";
 
-// --- Codec Toggle (saved in localStorage) ---
+// --- Codec Toggle ---
 const CODEC_KEY = "scramjet_codec_enabled";
 
 function isCodecEnabled() {
     const val = localStorage.getItem(CODEC_KEY);
-    return val === null ? true : val === "true"; // default on
+    return val === null ? true : val === "true";
 }
 
 function setCodecEnabled(val) {
@@ -45,6 +45,37 @@ function getCodec(enabled) {
     }
 }
 
+// Inject toggle button
+const toggleBtn = document.createElement("button");
+toggleBtn.id = "codec-toggle-btn";
+toggleBtn.textContent = isCodecEnabled() ? "🔒 URL Mask: ON" : "🔓 URL Mask: OFF";
+toggleBtn.style.cssText = `
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999999;
+    background: ${isCodecEnabled() ? "rgba(0,180,80,0.85)" : "rgba(180,0,0,0.75)"};
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+`;
+toggleBtn.addEventListener("click", async () => {
+    const next = !isCodecEnabled();
+    setCodecEnabled(next);
+    if (navigator.serviceWorker.controller) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const reg of registrations) {
+            await reg.unregister();
+        }
+    }
+    location.reload();
+});
+document.body.appendChild(toggleBtn);
+
 let currentUrl = "";
 let globalConnection;
 
@@ -67,45 +98,6 @@ const scramjet = new ScramjetController({
 scramjet.init();
 
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
-
-// --- Inject toggle button into page ---
-function injectToggleButton() {
-    const existing = document.getElementById("codec-toggle-btn");
-    if (existing) existing.remove();
-
-    const enabled = isCodecEnabled();
-    const btn = document.createElement("button");
-    btn.id = "codec-toggle-btn";
-    btn.textContent = enabled ? "URL Mask: ON" : "URL Mask: OFF";
-    btn.title = "Toggle URL masking (requires page reload to take effect)";
-    btn.style.cssText = `
-        position: fixed;
-        top: 12px;
-        right: 12px;
-        z-index: 9999999;
-        background: ${enabled ? "rgba(0,180,80,0.85)" : "rgba(180,0,0,0.75)"};
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 6px 12px;
-        font-size: 13px;
-        cursor: pointer;
-        backdrop-filter: blur(4px);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        transition: background 0.2s;
-    `;
-    btn.addEventListener("click", () => {
-        const next = !isCodecEnabled();
-        setCodecEnabled(next);
-        btn.textContent = next ? " URL Mask: ON" : " URL Mask: OFF";
-        btn.style.background = next ? "rgba(0,180,80,0.85)" : "rgba(180,0,0,0.75)";
-        // Reload so ScramjetController re-initializes with new codec
-        location.reload();
-    });
-    document.body.appendChild(btn);
-}
-
-injectToggleButton();
 
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
