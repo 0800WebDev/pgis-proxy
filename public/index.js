@@ -1,30 +1,48 @@
 "use strict";
 
-function xorCipher(str, key) {
-    let result = "";
-    for (let i = 0; i < str.length; i++) {
-        result += String.fromCharCode(
-            str.charCodeAt(i) ^ key.charCodeAt(i % key.length)
-        );
+// --- Codec Toggle (saved in localStorage) ---
+const CODEC_KEY = "scramjet_codec_enabled";
+
+function isCodecEnabled() {
+    const val = localStorage.getItem(CODEC_KEY);
+    return val === null ? true : val === "true"; // default on
+}
+
+function setCodecEnabled(val) {
+    localStorage.setItem(CODEC_KEY, String(val));
+}
+
+function getCodec(enabled) {
+    if (enabled) {
+        return {
+            encode: `(url) => {
+                if (!url) return url;
+                try {
+                    const u = new URL(url);
+                    u.hostname = u.hostname.replace(/\\./g, ",");
+                    return u.toString();
+                } catch(e) {
+                    return url;
+                }
+            }`,
+            decode: `(encoded) => {
+                if (!encoded) return encoded;
+                try {
+                    const withDots = encoded.replace(/:\\/\\/([^/]+)/, (match, host) => {
+                        return "://" + host.replace(/,/g, ".");
+                    });
+                    return withDots;
+                } catch(e) {
+                    return encoded;
+                }
+            }`,
+        };
+    } else {
+        return {
+            encode: `(url) => { if (!url) return url; return encodeURIComponent(url); }`,
+            decode: `(encoded) => { if (!encoded) return encoded; try { return decodeURIComponent(encoded); } catch(e) { return encoded; } }`,
+        };
     }
-    return result;
-}
-
-function encode(url) {
-    if (!url) return url;
-    const key = "k7Xm2#pQ9nLw4@Rz";
-    return btoa(xorCipher(url, key))
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=/g, "");
-}
-
-function decode(encoded) {
-    if (!encoded) return encoded;
-    const key = "k7Xm2#pQ9nLw4@Rz";
-    let b64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
-    while (b64.length % 4) b64 += "=";
-    return xorCipher(atob(b64), key);
 }
 
 let currentUrl = "";
@@ -39,30 +57,7 @@ const errorCode = document.getElementById("sj-error-code");
 const { ScramjetController } = $scramjetLoadController();
 const scramjet = new ScramjetController({
     prefix: "/scramjet/",
-    codec: {
-        encode: `(url) => {
-            if (!url) return url;
-            try {
-                const u = new URL(url);
-                u.hostname = u.hostname.replace(/\\./g, ",");
-                return u.toString();
-            } catch(e) {
-                return url;
-            }
-        }`,
-        decode: `(encoded) => {
-            if (!encoded) return encoded;
-            try {
-                // fix the hostname BEFORE passing to URL constructor
-                const withDots = encoded.replace(/:\\/\\/([^/]+)/, (match, host) => {
-                    return "://" + host.replace(/,/g, ".");
-                });
-                return withDots;
-            } catch(e) {
-                return encoded;
-            }
-        }`,
-    },
+    codec: getCodec(isCodecEnabled()),
     files: {
         wasm: "/scram/scramjet.wasm.wasm",
         all: "/scram/scramjet.all.js",
@@ -72,6 +67,45 @@ const scramjet = new ScramjetController({
 scramjet.init();
 
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
+
+// --- Inject toggle button into page ---
+function injectToggleButton() {
+    const existing = document.getElementById("codec-toggle-btn");
+    if (existing) existing.remove();
+
+    const enabled = isCodecEnabled();
+    const btn = document.createElement("button");
+    btn.id = "codec-toggle-btn";
+    btn.textContent = enabled ? "🔒 URL Mask: ON" : "🔓 URL Mask: OFF";
+    btn.title = "Toggle URL masking (requires page reload to take effect)";
+    btn.style.cssText = `
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        z-index: 9999999;
+        background: ${enabled ? "rgba(0,180,80,0.85)" : "rgba(180,0,0,0.75)"};
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 13px;
+        cursor: pointer;
+        backdrop-filter: blur(4px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        transition: background 0.2s;
+    `;
+    btn.addEventListener("click", () => {
+        const next = !isCodecEnabled();
+        setCodecEnabled(next);
+        btn.textContent = next ? "🔒 URL Mask: ON" : "🔓 URL Mask: OFF";
+        btn.style.background = next ? "rgba(0,180,80,0.85)" : "rgba(180,0,0,0.75)";
+        // Reload so ScramjetController re-initializes with new codec
+        location.reload();
+    });
+    document.body.appendChild(btn);
+}
+
+injectToggleButton();
 
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
