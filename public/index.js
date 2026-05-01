@@ -47,17 +47,19 @@ const scramjet = new ScramjetController({
                 u.hostname = u.hostname.replace(/\\./g, ",");
                 return u.toString();
             } catch(e) {
-                return url.replace(/\\./g, ",");
+                return url;
             }
         }`,
         decode: `(encoded) => {
             if (!encoded) return encoded;
             try {
-                const u = new URL(encoded);
-                u.hostname = u.hostname.replace(/,/g, ".");
-                return u.toString();
+                // fix the hostname BEFORE passing to URL constructor
+                const withDots = encoded.replace(/:\\/\\/([^/]+)/, (match, host) => {
+                    return "://" + host.replace(/,/g, ".");
+                });
+                return withDots;
             } catch(e) {
-                return encoded.replace(/,/g, ".");
+                return encoded;
             }
         }`,
     },
