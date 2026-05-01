@@ -41,11 +41,11 @@ function getCodec(enabled) {
         return {
             encode: `(url) => {
                 if (!url) return url;
-                return url.replace("://", ",,,");
+                return url.replace("://", "://");
             }`,
             decode: `(encoded) => {
                 if (!encoded) return encoded;
-                return encoded.replace(",,,", "://");
+                return encoded.replace("://", "://");
             }`,
         };
     }
