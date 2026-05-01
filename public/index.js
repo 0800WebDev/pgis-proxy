@@ -48,7 +48,7 @@ function getCodec(enabled) {
 // Inject toggle button
 const toggleBtn = document.createElement("button");
 toggleBtn.id = "codec-toggle-btn";
-toggleBtn.textContent = isCodecEnabled() ? "🔒 URL Mask: ON" : "🔓 URL Mask: OFF";
+toggleBtn.textContent = isCodecEnabled() ? "URL Mask: ON" : "URL Mask: OFF";
 toggleBtn.style.cssText = `
     position: fixed;
     top: 12px;
