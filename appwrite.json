@@ -1,0 +1,11 @@
+{
+    "projectId": "69f4d43e001852db5970",
+    "projectName": "Scramjet-App",
+    "sites": [
+        {
+            "$id": "69f4e17f00049568c8df",
+            "name": "My Site",
+            "root": "./public"
+        }
+    ]
+}
