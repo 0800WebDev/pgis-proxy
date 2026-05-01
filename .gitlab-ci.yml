@@ -17,3 +17,14 @@ deploy_functions:
     - appwrite deploy function --all --yes
   only:
     - main  # Only run this on pushes to the main branch
+
+deploy:
+  stage: deploy
+  image: node:latest
+  script:
+    - npm install -g appwrite-cli
+    - npm install
+    - npm run build
+    # This command is what 'connects' GitLab to that Manual site
+    - appwrite client --endpoint https://appwrite.io --projectId [YOUR_PROJECT_ID] --key $APPWRITE_API_KEY
+    - appwrite deploy site --siteId 69f4db06000679c4a7ca --path ./dist --yes
