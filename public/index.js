@@ -1,6 +1,6 @@
 "use strict";
 
-const SECRET_KEY = "k7Xm2#pQ9nLw4@Rz"; // change this to something secret
+const SECRET_KEY = "k7Xm2#pQ9nLw4@Rz"; // your key
 
 function xorEncode(str, key) {
     return btoa(
@@ -11,13 +11,17 @@ function xorEncode(str, key) {
 }
 
 function xorDecode(encoded, key) {
-    // Restore base64 padding
     let b64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
     while (b64.length % 4) b64 += "=";
     const str = atob(b64);
     return str.split("").map((c, i) =>
         String.fromCharCode(c.charCodeAt(0) ^ key.charCodeAt(i % key.length))
     ).join("");
+}
+
+// Wraps scramjet's encode so the URL bar shows encoded text
+function proxyUrl(rawUrl) {
+    return scramjet.encodeUrl(rawUrl); // scramjet handles its own routing internally
 }
 
 let currentUrl = "";
@@ -52,8 +56,6 @@ form.addEventListener("submit", async (event) => {
     }
 
     const rawUrl = search(address.value, searchEngine.value);
-    const encodedUrl = xorEncode(rawUrl, SECRET_KEY);
-    const proxyUrl = `/scramjet/${encodedUrl}`;
 
     let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
 
@@ -64,7 +66,7 @@ form.addEventListener("submit", async (event) => {
     const frame = scramjet.createFrame();
     frame.frame.id = "sj-frame";
     document.body.appendChild(frame.frame);
-    frame.go(proxyUrl);
+    frame.go(rawUrl); // pass real URL to scramjet directly
 
     document.body.insertAdjacentHTML("beforeend", `
         <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.43); padding: 6px; align-items: center; border-radius: 8px; width: fit-content; position: fixed; bottom: 20px; left: 20px; z-index: 1000000;"> 
@@ -77,8 +79,7 @@ form.addEventListener("submit", async (event) => {
     newAddress.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
             const newRawUrl = search(newAddress.value, searchEngine.value);
-            const newEncoded = xorEncode(newRawUrl, SECRET_KEY);
-            frame.go(`/scramjet/${newEncoded}`);
+            frame.go(newRawUrl);
         }
     });
 
@@ -92,11 +93,9 @@ form.addEventListener("submit", async (event) => {
 async function loadShortcut(targetUrl) {
     const searchEngine = document.getElementById("sj-search-engine");
     const rawUrl = search(targetUrl, searchEngine.value);
-    const encodedUrl = xorEncode(rawUrl, SECRET_KEY);
-    const proxyUrl = `/scramjet/${encodedUrl}`;
 
     if (window.currentFrame) {
-        window.currentFrame.go(proxyUrl);
+        window.currentFrame.go(rawUrl);
         return;
     }
 
@@ -121,7 +120,7 @@ async function loadShortcut(targetUrl) {
     frame.frame.id = "sj-frame";
     document.body.appendChild(frame.frame);
     window.currentFrame = frame;
-    frame.go(proxyUrl);
+    frame.go(rawUrl);
 
     document.body.insertAdjacentHTML("beforeend", `
         <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.43); padding: 6px; align-items: center; border-radius: 8px; width: fit-content; position: fixed; bottom: 20px; left: 20px; z-index: 1000000;"> 
@@ -134,8 +133,7 @@ async function loadShortcut(targetUrl) {
     newAddress.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
             const newRawUrl = search(newAddress.value, searchEngine.value);
-            const newEncoded = xorEncode(newRawUrl, SECRET_KEY);
-            frame.go(`/scramjet/${newEncoded}`);
+            frame.go(newRawUrl);
         }
     });
 
