@@ -25,7 +25,7 @@ mirror_to_github:
       script:
   - git config --global user.email "spmspy0800@gmai.com"
               - git config --global user.name "mirror-bot"
-                  - git remote add github https://0800WebDev:gitlab@github.com/0800WebDev/pgis-proxy-2.git
+                  - git remote add github https://github.com/0800WebDev/pgis-proxy-2.git
                       - git push --mirror github
                         only:
                             - main
