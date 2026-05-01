@@ -7,11 +7,10 @@ deploy_site:
   script:
     - npm install -g appwrite-cli
     
-    # 1. Login
+    # 1. Login (This is already working)
     - appwrite client --endpoint https://cloud.appwrite.io/v1 --project-id 69f4d43e001852db5970 --key $APPWRITE_API_KEY
     
-    # 2. Deploy Everything
-    # The CLI will read the appwrite.json file automatically
-    - appwrite deploy site
+    # 2. Use the NEW command 'push' instead of 'deploy'
+    - appwrite push site
   only:
     - main
