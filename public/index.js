@@ -39,8 +39,8 @@ function getCodec(enabled) {
         };
     } else {
         return {
-            encode: `(url) => { if (!url) return url; return encodeURIComponent(url); }`,
-            decode: `(encoded) => { if (!encoded) return encoded; try { return decodeURIComponent(encoded); } catch(e) { return encoded; } }`,
+            encode: `(url) => { return url; }`,
+            decode: `(encoded) => { return encoded; }`,
         };
     }
 }
