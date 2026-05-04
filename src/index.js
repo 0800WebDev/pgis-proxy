@@ -1,9 +1,13 @@
 import { createServer } from "node:http";
 import { fileURLToPath } from "url";
 import { hostname } from "node:os";
-import { server as wisp, logging } from "@mercuryworkshop/wisp-js/server";
+import path from "node:path";
+
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
+import cors from "@fastify/cors";
+
+import { server as wisp, logging } from "@mercuryworkshop/wisp-js/server";
 
 import { scramjetPath } from "@mercuryworkshop/scramjet/path";
 import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
@@ -11,9 +15,8 @@ import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 
 const publicPath = fileURLToPath(new URL("../public/", import.meta.url));
 
-// Wisp Configuration: Refer to the documentation at https://www.npmjs.com/package/@mercuryworkshop/wisp-js
-
 logging.set_level(logging.NONE);
+
 Object.assign(wisp.options, {
 	allow_udp_streams: false,
 	hostname_blacklist: [/example\.com/],
@@ -29,10 +32,23 @@ const fastify = Fastify({
 				handler(req, res);
 			})
 			.on("upgrade", (req, socket, head) => {
-				if (req.url.endsWith("/wisp/")) wisp.routeRequest(req, socket, head);
-				else socket.end();
+				if (req.url.endsWith("/wisp/")) {
+					wisp.routeRequest(req, socket, head);
+				} else {
+					socket.end();
+				}
 			});
 	},
+});
+
+await fastify.register(cors, {
+	origin: "https://pgis.x10.mx",
+	methods: ["GET", "POST", "OPTIONS"],
+});
+
+fastify.addHook("onSend", async (req, reply) => {
+	reply.header("Cross-Origin-Opener-Policy", "same-origin");
+	reply.header("Cross-Origin-Embedder-Policy", "require-corp");
 });
 
 fastify.register(fastifyStatic, {
@@ -56,24 +72,24 @@ fastify.register(fastifyStatic, {
 	root: baremuxPath,
 	prefix: "/baremux/",
 	decorateReply: false,
+	setHeaders(res) {
+		res.setHeader("Content-Type", "text/javascript");
+		res.setHeader("Access-Control-Allow-Origin", "*");
+	},
 });
 
-fastify.setNotFoundHandler((res, reply) => {
+fastify.setNotFoundHandler((req, reply) => {
 	return reply.code(404).type("text/html").sendFile("404.html");
 });
 
 fastify.server.on("listening", () => {
 	const address = fastify.server.address();
 
-	// by default we are listening on 0.0.0.0 (every interface)
-	// we just need to list a few
 	console.log("Listening on:");
 	console.log(`\thttp://localhost:${address.port}`);
 	console.log(`\thttp://${hostname()}:${address.port}`);
 	console.log(
-		`\thttp://${
-			address.family === "IPv6" ? `[${address.address}]` : address.address
-		}:${address.port}`
+		`\thttp://${address.family === "IPv6" ? `[${address.address}]` : address.address}:${address.port}`
 	);
 });
 
@@ -87,10 +103,9 @@ function shutdown() {
 }
 
 let port = parseInt(process.env.PORT || "");
-
 if (isNaN(port)) port = 8080;
 
 fastify.listen({
-	port: port,
+	port,
 	host: "0.0.0.0",
 });
