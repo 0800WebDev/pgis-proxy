@@ -3,7 +3,7 @@ title: Math Space
 emoji: 🧮
 colorFrom: blue
 colorTo: purple
-sdk: node
+sdk: docker
 app_file: src/index.js
 pinned: false
 ---
