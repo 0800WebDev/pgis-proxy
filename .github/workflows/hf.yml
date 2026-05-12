@@ -1,0 +1,41 @@
+name: Deploy to Hugging Face Space
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Clone Hugging Face Space
+        run: |
+          git clone https://huggingface.co/spaces/0800idk/math space
+
+      - name: Sync files (exclude images)
+        run: |
+          rsync -av \
+            --exclude ".git" \
+            --exclude ".github" \
+            --exclude "*.png" \
+            --exclude "*.jpg" \
+            --exclude "*.jpeg" \
+            --exclude "*.webp" \
+            ./ space/
+
+      - name: Commit and push to Hugging Face
+        run: |
+          cd space
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add .
+
+          git commit -m "sync (no images)" || exit 0
+
+          git push https://0800:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/0800idk/math main
