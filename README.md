@@ -1,3 +1,14 @@
+---
+title: Math Space
+emoji: 🧮
+colorFrom: blue
+colorTo: purple
+sdk: node
+app_file: src/index.js
+pinned: false
+---
+
+
 <p align="center"><img src="https://raw.githubusercontent.com/MercuryWorkshop/scramjet/main/assets/scramjet.png" height="200"></p>
 
 <h1 align="center">Scramjet Demo</h1>
