@@ -5,7 +5,6 @@ import path from "node:path";
 
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
-import cors from "@fastify/cors";
 
 import { server as wisp, logging } from "@mercuryworkshop/wisp-js/server";
 
@@ -39,11 +38,6 @@ const fastify = Fastify({
 				}
 			});
 	},
-});
-
-await fastify.register(cors, {
-	origin: "https://pgis.x10.mx",
-	methods: ["GET", "POST", "OPTIONS"],
 });
 
 fastify.addHook("onSend", async (req, reply) => {
