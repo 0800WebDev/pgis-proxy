@@ -8,12 +8,13 @@
 		"node": ">=16.0.0"
 	},
 		"scripts": {
-		"build": "echo 'No compilation needed'",
+		"build": "mkdir -p dist/angular && touch dist/angular/index.html",
 		"start": "node src/index.js",
 		"format": "prettier --write .",
 		"lint": "eslint ./src/",
 		"lint:fix": "eslint ./src/ --fix"
 	},
+
 
 	"keywords": [
 		"proxy"
