@@ -1,78 +1,39 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>
-      PGIS 2 - mirrors and links
-    </title>
+    <title>PGIS 2 - mirrors and links</title>
     <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/1XJnjRTF/0937a70d8c13420e9c4d8b0dc92bddaa-free-1.png" />
     <style>
-      html, body { scroll-behavior: smooth; text-align: center; background-color: black; color: whitesmoke; } /* Container for the game divs */ .games-area {background-color: rgba(0,0,0,0.1); display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1; } /* Each game div itself */ .gamediv {   width: 200px;
-    height: 150px;
-    background-color: rgba(0, 0, 0, 0.3); /* semi-transparent black */
-    background-size: cover;
-    background-position: center;
-    cursor: auto;
-    border: 1px solid #444;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(2px); /* optional, makes it smoother */}
-     button { cursor: pointer;
-      background-color: #444;
-       color: whitesmoke;
-        border: none; }
-         button:hover { 
-            cursor: pointer;
-             background-color: lightgray; 
-             color: black; border: none; }
-              a { color: white; } /* Particle background container */ #particles-js {
-                 position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;       /* keep behind the games */
-    pointer-events: none; /* so clicks go through */
-    background: transparent; /* make sure it’s not black */}
-    
-    
+      html, body { scroll-behavior: smooth; text-align: center; background-color: black; color: whitesmoke; }
+      .games-area {background-color: rgba(0,0,0,0.1); display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1; }
+      .gamediv { width: 200px; height: 150px; background-color: rgba(0, 0, 0, 0.3); background-size: cover; background-position: center; cursor: auto; border: 1px solid #444; border-radius: 5px; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(2px);}
+      button { cursor: pointer; background-color: #444; color: whitesmoke; border: none; }
+      button:hover { cursor: pointer; background-color: lightgray; color: black; border: none; }
+      a { color: white; }
+      #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; background: transparent; }
 
-#search {
-    width: 250px;
-    padding: 10px 15px;
-    font-size: 16px;
-    border: 1px solid #555;
-    border-radius: 8px;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: whitesmoke;
-    outline: none;
-    box-shadow: 0 0 5px rgba(255,255,255,0.2);
-    transition: all 0.3s ease;
-}
-
-#search::placeholder {
-    color: #aaa;
-}
-
-#search:focus {
-    border-color: #fff;
-    box-shadow: 0 0 10px rgba(255,255,255,0.5);
-    background-color: rgba(0,0,0,0.8);
-}
+      #search {
+        width: 250px;
+        padding: 10px 15px;
+        font-size: 16px;
+        border: 1px solid #555;
+        border-radius: 8px;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: whitesmoke;
+        outline: none;
+        box-shadow: 0 0 5px rgba(255,255,255,0.2);
+        transition: all 0.3s ease;
+      }
+      #search::placeholder { color: #aaa; }
+      #search:focus { border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.5); background-color: rgba(0,0,0,0.8); }
     </style>
   </head>
   <body>
-    <!-- Particle background -->
-    <div id="particles-js">
-    </div>
-    <h2>    mirrors
-</h2>
+    <div id="particles-js"></div>
+    <h2>mirrors</h2>
     <br />
     <br />
-    <a href="/" style="color: white;">    Back to Homepage
-</a>
+    <a href="/" style="color: white;">Back to Homepage</a>
     <br />
     <br />
     <div style="text-align: left;">
@@ -80,89 +41,51 @@
         <b>main (render)</b>
         <a href="https://education-qik.onrender.com" target="_blank">https://education-qik.onrender.com</a>
       </p>
-
       <p>
         <b>mirror1 (vercel. might not work ,idk.)</b>
         <a href="https://educational-web-rho.vercel.app" target="_blank">https://educational-web-rho.vercel.app</a>
       </p>
- <p>
+      <p>
         <b>github codespaces <small>(port 8080, mostly for testing, might not be active, might be outdated, not recogmended for use)</small></b>
         <a href="https://fuzzy-umbrella-696v6gx69x9phr4ww-8080.app.github.dev/" target="_blank">https://fuzzy-umbrella-696v6gx69x9phr4ww-8080.app.github.dev/</a>
       </p>
-
-
-
-
-    
-      
     </div>
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+      particlesJS('particles-js', {
+        "particles": {
+          "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
+          "color": { "value": "#ffffff" },
+          "shape": { "type": "circle", "stroke": { "width": 0 } },
+          "opacity": { "value": 0.08, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.3, "sync": false } },
+          "size": { "value": 3, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 0.5, "sync": false } },
+          "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1 },
+          "move": { "enable": true, "speed": 1.5, "direction": "none", "straight": false, "out_mode": "out" }
+        },
+        "interactivity": {
+          "detect_on": "window",
+          "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": false } },
+          "modes": { "repulse": { "distance": 120, "duration": 0.5 } }
+        },
+        "retina_detect": true
+      });
     </script>
     <script>
-      // GHUB-style particles with cursor fix
-particlesJS(&#39;particles-js&#39;, {
-  &#34;particles&#34;: {
-    &#34;number&#34;: {
-      &#34;value&#34;: 100,
-      &#34;density&#34;: { &#34;enable&#34;: true, &#34;value_area&#34;: 800 }
-    },
-    &#34;color&#34;: { &#34;value&#34;: &#34;#ffffff&#34; },
-    &#34;shape&#34;: { &#34;type&#34;: &#34;circle&#34;, &#34;stroke&#34;: { &#34;width&#34;: 0 } },
-    &#34;opacity&#34;: {
-      &#34;value&#34;: 0.08,
-      &#34;random&#34;: true,
-      &#34;anim&#34;: { &#34;enable&#34;: true, &#34;speed&#34;: 1, &#34;opacity_min&#34;: 0.3, &#34;sync&#34;: false }
-    },
-    &#34;size&#34;: {
-      &#34;value&#34;: 3,
-      &#34;random&#34;: true,
-      &#34;anim&#34;: { &#34;enable&#34;: true, &#34;speed&#34;: 2, &#34;size_min&#34;: 0.5, &#34;sync&#34;: false }
-    },
-    &#34;line_linked&#34;: {
-      &#34;enable&#34;: true,
-      &#34;distance&#34;: 150,
-      &#34;color&#34;: &#34;#ffffff&#34;,
-      &#34;opacity&#34;: 0.4,
-      &#34;width&#34;: 1
-    },
-    &#34;move&#34;: {
-      &#34;enable&#34;: true,
-      &#34;speed&#34;: 1.5,
-      &#34;direction&#34;: &#34;none&#34;,
-      &#34;straight&#34;: false,
-      &#34;out_mode&#34;: &#34;out&#34;
-    }
-  },
-  &#34;interactivity&#34;: {
-    &#34;detect_on&#34;: &#34;window&#34;, // ← cursor now works over all elements
-    &#34;events&#34;: {
-      &#34;onhover&#34;: { &#34;enable&#34;: true, &#34;mode&#34;: &#34;repulse&#34; },
-      &#34;onclick&#34;: { &#34;enable&#34;: false }
-    },
-    &#34;modes&#34;: {
-      &#34;repulse&#34;: { &#34;distance&#34;: 120, &#34;duration&#34;: 0.5 }
-    }
-  },
-  &#34;retina_detect&#34;: true
-});
-    </script>
-    <script>
-      const searchInput = document.getElementById(&#39;search&#39;);
-const gameDivs = document.querySelectorAll(&#39;.gamediv&#39;);
-
-searchInput.addEventListener(&#39;input&#39;, () =&gt; {
-    const query = searchInput.value.toLowerCase();
-
-    gameDivs.forEach(div =&gt; {
-        const gameName = div.querySelector(&#39;b&#39;).textContent.toLowerCase();
-        if (gameName.includes(query) || query === &#39;&#39;) {
-            div.style.display = &#39;flex&#39;; // show matching games
-        } else {
-            div.style.display = &#39;none&#39;; // hide non-matching games
-        }
-    });
-});
+      const searchInput = document.getElementById('search');
+      const gameDivs = document.querySelectorAll('.gamediv');
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          const query = searchInput.value.toLowerCase();
+          gameDivs.forEach(div => {
+            const gameName = div.querySelector('b').textContent.toLowerCase();
+            if (gameName.includes(query) || query === '') {
+              div.style.display = 'flex';
+            } else {
+              div.style.display = 'none';
+            }
+          });
+        });
+      }
     </script>
   </body>
 </html>
