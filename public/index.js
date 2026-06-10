@@ -1,11 +1,10 @@
 "use strict";
 
-// --- Codec Toggle (saved in localStorage) ---
 const CODEC_KEY = "scramjet_codec_enabled";
 
 function isCodecEnabled() {
     const val = localStorage.getItem(CODEC_KEY);
-    return val === null ? true : val === "true"; // default on
+    return val === null ? true : val === "true";
 }
 
 function setCodecEnabled(val) {
@@ -39,7 +38,7 @@ function getCodec(enabled) {
         };
     } else {
         return {
-            encode: `(url) => { if (!url) return url; return encodeURIComponent(url); }`,
+            encode: `(url) => url`,
             decode: `(encoded) => { if (!encoded) return encoded; try { return decodeURIComponent(encoded); } catch(e) { return encoded; } }`,
         };
     }
@@ -68,7 +67,6 @@ scramjet.init();
 
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
 
-// --- Inject toggle button into page ---
 function injectToggleButton() {
     const existing = document.getElementById("codec-toggle-btn");
     if (existing) existing.remove();
@@ -94,12 +92,15 @@ function injectToggleButton() {
         box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         transition: background 0.2s;
     `;
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
         const next = !isCodecEnabled();
         setCodecEnabled(next);
         btn.textContent = next ? " URL Mask: ON" : " URL Mask: OFF";
         btn.style.background = next ? "rgba(0,180,80,0.85)" : "rgba(180,0,0,0.75)";
-        // Reload so ScramjetController re-initializes with new codec
+        if ("serviceWorker" in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(registrations.map(r => r.unregister()));
+        }
         location.reload();
     });
     document.body.appendChild(btn);
@@ -149,7 +150,6 @@ form.addEventListener("submit", async (event) => {
         frame.go(frame.url.href);
     });
 });
-
 
 async function loadShortcut(targetUrl) {
     const searchEngine = document.getElementById("sj-search-engine");
