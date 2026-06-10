@@ -1,56 +1,28 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-		/>
-		<title>PGIS </title>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+<title>PGIS </title>
 
-				<link rel="shortcut icon" content="favicon.webp" />
-	
-		<script src="/scram/scramjet.all.js"></script>
-		<script src="/baremux/index.js"></script>
-		
-		<link rel="stylesheet" href="index.css" />
-		<script src="register-sw.js" defer></script>
-		<script src="search.js" defer></script>
-		<script src="index.js" defer></script>
+<link rel="shortcut icon" content="favicon.webp" />
 
-  <style> html, body { scroll-behavior: smooth; text-align: center; background-color: black; color: whitesmoke; font-variant-emoji: text;} /* Container for the game divs */ .games-area {background-color: rgba(0,0,0,0.1); display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1; } /* Each game div itself */ .gamediv {   width: 200px;
-    height: 150px;
-    background-color: rgba(0, 0, 0, 0.3); /* semi-transparent black */
-    background-size: cover;
-    background-position: center;
-    cursor: auto;
-    border: 1px solid #444;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(2px); /* optional, makes it smoother */}
-     button, input { 
-        cursor: pointer;
-      background-color: #444;
-       color: whitesmoke;
-        border: none; }
-         button:hover { 
-            cursor: pointer;
-             background-color: lightgray; 
-             color: black; border: none; }
-              a { color: white; } /* Particle background container */ #particles-js {
-                 position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;       /* keep behind the games */
-    pointer-events: none; /* so clicks go through */
-    background: transparent; /* make sure it’s not black */}
-    
-    
+<script src="/scram/scramjet.all.js"></script>
+<script src="/baremux/index.js"></script>
+
+<link rel="stylesheet" href="index.css" />
+<script src="register-sw.js" defer></script>
+<script src="search.js" defer></script>
+<script src="index.js" defer></script>
+
+<style>
+html, body { scroll-behavior: smooth; text-align: center; background-color: black; color: whitesmoke; font-variant-emoji: text;}
+.games-area {background-color: rgba(0,0,0,0.1); display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1; }
+.gamediv { width: 200px; height: 150px; background-color: rgba(0, 0, 0, 0.3); background-size: cover; background-position: center; cursor: auto; border: 1px solid #444; border-radius: 5px; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(2px);}
+button, input { cursor: pointer; background-color: #444; color: whitesmoke; border: none; }
+button:hover { cursor: pointer; background-color: lightgray; color: black; border: none; }
+a { color: white; }
+#particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; background: transparent; }
 
 #sj-address, #sj-new-address {
     width: 250px;
@@ -65,111 +37,70 @@
     transition: all 0.3s ease;
     height: 30px;
 }
-
-#sj-address::placeholder, #sj-new-address::placeholder {
-    color: #aaa;
-}
-
-#sj-address:focus, #sj-new-address:focus {
-    border-color: #fff;
-    box-shadow: 0 0 10px rgba(255,255,255,0.5);
-    background-color: rgba(0,0,0,0.8);
-}
-
-
-a {
-  cursor: pointer;
-}
+#sj-address::placeholder, #sj-new-address::placeholder { color: #aaa; }
+#sj-address:focus, #sj-new-address:focus { border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.5); background-color: rgba(0,0,0,0.8); }
+a { cursor: pointer; }
 </style>
+</head>
 
+<body>
+<div id="particles-js"></div>
 
+<div title="PGIS Logo" class="flex-center logo-wrapper header-center">
+<img class="logo" src="logo.png" alt="logo" />
+<h1>P G I S    p r o x y</h1>
+</div>
+<div class="flex-center desc left-margin"></div>
 
+<form id="sj-form" class="flex-center">
+<input id="sj-search-engine" value="https://duckduckgo.com/?q=%s" type="hidden" />
+<input id="sj-address" type="text" placeholder="search or enter an url" />
+<br>
+</form>
 
-
-
-	</head>
-
-	<body>
- <div id="particles-js"></div>
-
-
-
-		<div title="PGIS Logo" class="flex-center logo-wrapper header-center">
-			<img class="logo" src="logo.png" alt="logo" />
-			<h1>P G I S    p r o x y</h1>
-		</div>
-		<div class="flex-center desc left-margin">
-			
-		</div>
-
-		<form id="sj-form" class="flex-center">
-			<input
-				id="sj-search-engine"
-				value="https://duckduckgo.com/?q=%s"
-				type="hidden"
-			/>
-			<input id="sj-address" type="text" placeholder="search or enter an url" />
-			<br>
-		</form>
-    
-        <br><br>
-		<div>
-			<br>
+<br><br>
+<div>
+<br>
 <a style="padding: 12px;" onclick="loadShortcut('https://google.com')"><img src="Google_btn.png" style="height: 40px;"></a>
 <a style="padding: 12px;" onclick="loadShortcut('https://youtube.com')"><img src="Youtube_btn.png" style="height: 40px;"></a>
-<a style="padding: 12px;" onclick="loadShortcut('https://tiktok.com')"><img src="Tiktok_btn.png" style="height: 40px" ></a>
+<a style="padding: 12px;" onclick="loadShortcut('https://tiktok.com')"><img src="Tiktok_btn.png" style="height: 40px;"></a>
 <a style="padding: 12px;" onclick="loadShortcut('https://github.com')"><img src="Github_btn.png" style="height: 40px;"></a>
 <a style="padding: 12px;" onclick="loadShortcut('https://now.gg')"><img src="Nowgg_btn.png" style="height: 40px;"></a>
-		</div>
-        <br><br><br>
+</div>
+<br><br><br>
 
-		<div class="desc left-margin">
-			<p id="sj-error"></p>
-			<pre id="sj-error-code"></pre>
-		</div>
-		<footer>
-			<div>
-				<br>
-				<a title="return" href="https://pgis.x10.mx">PGIS</a>
-        <a title="mirrors idk" href="/mirrors">Mirrors</a>
-        <br>
-        <a title="repo" href="https://gitlab.com/0800WebDev/Scramjet-App/" target="_blank">GitLab repo</a>
-        <a title="repo2" href="https://github.com/0800WebDev/pgis-proxy/" target="_blank">GitHub repo</a>
-        <br>
-        <a title="profile" href="https://github.com/0800WebDev/" target="_blank">GitHub profile</a>
-		</footer>
-
-
-
-
-
-
-		
-
-
-      </div>
-
-
-
-
+<div class="desc left-margin">
+<p id="sj-error"></p>
+<pre id="sj-error-code"></pre>
+</div>
+<footer>
+<div>
+<br>
+<a title="return" href="https://pgis.x10.mx">PGIS</a>
+<a title="mirrors idk" href="/mirrors">Mirrors</a>
+<br>
+<a title="repo" href="https://gitlab.com/0800WebDev/Scramjet-App/" target="_blank">GitLab repo</a>
+<a title="repo2" href="https://github.com/0800webdev/pgis-proxy/" target="_blank">GitHub repo</a>
+<br>
+<a title="profile" href="https://github.com/0800WebDev/" target="_blank">GitHub profile</a>
+</div>
+</footer>
 
 <script>
   window.addEventListener("load", () => {
     const btn = document.createElement("button");
     btn.textContent = "↺";
     Object.assign(btn.style, {
-        position: "fixed",                   
+        position: "fixed",
         top: "10px",
         left: "10px",
         zIndex: "9999",
         padding: "8px 12px",
         cursor: "pointer",
-        backgroundColor: "#fff",
-        border: "1px solid #ccc",
-        borderRadius: "4px",
-        color: "whitesmoke",
         backgroundColor: "#444",
-        border: "none"
+        border: "none",
+        borderRadius: "4px",
+        color: "whitesmoke"
     });
 
     btn.onclick = async () => {
@@ -178,12 +109,9 @@ a {
             const text = await res.text();
             const parser = new DOMParser();
             const newDoc = parser.parseFromString(text, "text/html");
-
-                        document.head.innerHTML = newDoc.head.innerHTML;
+            document.head.innerHTML = newDoc.head.innerHTML;
             document.body.innerHTML = newDoc.body.innerHTML;
-
-                         document.body.appendChild(btn);
-            
+            document.body.appendChild(btn);
             console.log("Siden ble oppdatert uten full reload.");
         } catch (err) {
             console.error("Kunne ikke oppdatere siden:", err);
@@ -192,67 +120,29 @@ a {
 
     document.body.appendChild(btn);
 });
-
-
-
 </script>
 
-
-
-
-
-      <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script> <script>
-         // GHUB-style particles with cursor fix
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
 particlesJS('particles-js', {
   "particles": {
-    "number": {
-      "value": 100,
-      "density": { "enable": true, "value_area": 800 }
-    },
+    "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
     "color": { "value": "#ffffff" },
     "shape": { "type": "circle", "stroke": { "width": 0 } },
-    "opacity": {
-      "value": 0.08,
-      "random": true,
-      "anim": { "enable": true, "speed": 1, "opacity_min": 0.3, "sync": false }
-    },
-    "size": {
-      "value": 3,
-      "random": true,
-      "anim": { "enable": true, "speed": 2, "size_min": 0.5, "sync": false }
-    },
-    "line_linked": {
-      "enable": true,
-      "distance": 150,
-      "color": "#ffffff",
-      "opacity": 0.4,
-      "width": 1
-    },
-    "move": {
-      "enable": true,
-      "speed": 1.5,
-      "direction": "none",
-      "straight": false,
-      "out_mode": "out"
-    }
+    "opacity": { "value": 0.08, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.3, "sync": false } },
+    "size": { "value": 3, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 0.5, "sync": false } },
+    "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1 },
+    "move": { "enable": true, "speed": 1.5, "direction": "none", "straight": false, "out_mode": "out" }
   },
   "interactivity": {
-    "detect_on": "window", // ← cursor now works over all elements
-    "events": {
-      "onhover": { "enable": true, "mode": "repulse" },
-      "onclick": { "enable": false }
-    },
-    "modes": {
-      "repulse": { "distance": 120, "duration": 0.5 }
-    }
+    "detect_on": "window",
+    "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": false } },
+    "modes": { "repulse": { "distance": 120, "duration": 0.5 } }
   },
   "retina_detect": true
 });
-
-      </script> 
-    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-    <script>
-    eruda.init();
-    </script>
-	</body>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+</body>
 </html>
